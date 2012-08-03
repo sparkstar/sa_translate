@@ -3,12 +3,12 @@
 from django.http import HttpResponse
 from django.template import RequestContext, loader
 
-from main.models import Entries
+from models import Entries
 
 def mainpage(request):
-	entries = Entries.objects.all().order_by('-Writedate')[0:1]
-        tpl = loader.get_template('main/main.html')
-        ctx = RequestContext(request, {'entries':entries})
-        return HttpResponse(tpl.render(ctx))
+    entries = Entries.objects.all().order_by('-Writedate')[0:1]
+    tpl = loader.get_template('main/main.html')
+    ctx = RequestContext(request, {'entries':entries})
+    return HttpResponse(tpl.render(ctx))
 
 
