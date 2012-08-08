@@ -1,0 +1,8 @@
+{% include 'layout/header.html' %}
+{% for z in text %}
+    <img src="{{media_url}}/media/images/resources/jp/{{ z }}.png" />
+    
+{% endfor %}
+
+{{text}}
+{% include 'layout/footer.html' %}

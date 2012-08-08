@@ -11,21 +11,20 @@ query_create = '''
 create table if not exists "text" 
 (
     id int primary key not null,
-    textnumber int not null,
     textpos int not null,
     textpt int not null,
     unknown1 int not null,
-    unknown2 int not null
+    unknown2 int not null,
+    string text not null
 );
 '''
 
 dbconn = sqlite3.connect(database)
 cursor = dbconn.cursor()
-cursor.execute(query_drop)
-cursor.execute(query_create)
+#cursor.execute(query_drop)
+#cursor.execute(query_create)
 
-dbconn.commit()
-
+#dbconn.commit()
 
 #---------------------------------------------------------#
 fp = open(textname, "r")
@@ -34,9 +33,7 @@ p = re.compile(regexpform)
 list = p.findall(buffer)
 
 for a in range(len(list)):
-    t =  (list[a][0].decode("hex"), list[a][1].decode("hex"), list[a][2].decode("hex"), list[a][3].decode("hex"), list[a][4].decode("hex"), list[a][5])
-    cursor.execute('''insert into text values(?,?,?,?,?,?)''', t)
+    t =  (list[a][0].decode("hex"), list[a][0].decode("hex"), list[a][1].decode("hex"), list[a][2].decode("hex"), list[a][3].decode("hex"), list[a][4].decode("hex"), list[a][5])
+    cursor.execute('''insert into viewjp_text values(?,?,?,?,?,?,?)''', t)
 dbconn.commit()
 #---------------------------------------------------------#
-
-

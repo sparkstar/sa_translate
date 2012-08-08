@@ -125,7 +125,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 
-    'sa_translate.main'
+    'sa_translate.main',
+    'sa_translate.viewjp',
 )
 
 # A sample logging configuration. The only tangible logging

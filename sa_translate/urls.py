@@ -1,6 +1,7 @@
 from django.conf.urls.defaults import patterns, include, url
 
 from main.views import *
+from viewjp.views import *
 
 import os
 ROOT_PATH = os.path.dirname(__file__)
@@ -24,6 +25,7 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', 'main.views.mainpage'),
+    url(r'^viewtext/(?P<number>\d+)/$', 'viewjp.views.viewText'),
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH+'/media'}),
 
 
