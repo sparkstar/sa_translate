@@ -42,6 +42,7 @@ for z in range(imageRow):
         im.crop((left, upper, right, lower)).save(fileName)
         imageFile = imageFile + 1
 
+
 # font-jp
 imageFile = 0
 im = Image.open("font_jp.png").convert("RGBA")
@@ -49,15 +50,23 @@ imageWidth = im.size[0]
 imageHeight = im.size[1]
 imageCol = imageWidth / 64
 imageRow = imageHeight / 64
+prefixFilename = ""
+
 
 for z in range(imageRow):
     for y in range(imageCol):
+        '''
         if imageFile > 255:
             formatter = '%04x'
         else:
             formatter = '%02x'
-
-        fileName = "jp/" + formatter % imageFile + ".png"
+        '''
+        
+        if imageFile > 183:
+            imageFile = imageFile - 88
+            prefixFilename = "_"   
+        
+        fileName = "jp/" + prefixFilename + '%02x' % imageFile + ".png"
         left = fontSize * y
         upper = fontSize * z
         right = left + 64
