@@ -10,12 +10,18 @@
 {% endfor %}
 <br />
 <h4>텍스트 코드</h4>
-{{list}}
+    {% for z in list %}
+        {% if z >= '00' and z <= '20' %}
+            <font color="red">{{z}}</font>
+        {% else %}
+            {{z}}
+        {% endif %}
+    {% endfor %}
 </section>
 <section id="contentRight">
-<h4>번역 윈도우</h4>
-<textarea style="width : 100%">
-</textarea>
+	<h4>번역 윈도우</h4>
+	<textarea style="width : 100%">
+	</textarea>
 
 </section>
 {% include 'layout/footer.html' %}

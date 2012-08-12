@@ -9,7 +9,7 @@ class Text(models.Model):
     unknown1 = models.IntegerField()
     unknown2 = models.IntegerField()
     hexString = models.CharField(max_length=255)
-    
 
-
+class translateText(models.Model):
+    transTextNumber = models.IntegerField()
     

@@ -9,7 +9,3 @@ class Entries(models.Model):
     Contents = models.TextField(null=False)
     Writedate = models.DateTimeField(auto_now_add=True, auto_now=True)
 
-
-    
-
-
