@@ -9,7 +9,7 @@ import re
 def viewText(request, number):
     entries = Text.objects.get(textNumber = number)
     
-    parsedText = re.findall('..', entries.hexString)
+    parsedText = re.findall('f...|..', entries.hexString)
     '''
     temptext = []
     text = []
@@ -29,35 +29,42 @@ def viewText(request, number):
     text = jpcapProcess(parsedText)
     
     tpl = loader.get_template('viewjp/viewjp.html')
-    ctx = RequestContext(request, {'text':text})
+#    ctx = RequestContext(request, {'text':text})
+    ctx = RequestContext(request, {})
     return HttpResponse(tpl.render(ctx))
 
 
 def jpcapProcess(list):
     jpcapFlag = ""
     
+    completeList = []
+    lineList = []
     
     length = len(list)
     z = 0
-    
+    lineLength = 0
+
     while z < len(list) : 
         if list[z] == '03':
             jpcapFlag = ""
-            list.pop(z)
             
         elif list[z] == '04':
             jpcapFlag = "_"
-            list.pop(z)
-            
-        elif re.match('f.', list[z]) :
-            list[z] = list[z] + list[z + 1]
-            list.pop(z + 1)
-            z = z + 1
-        
+
+        elif list[z] == '0d':
+            lineLength = 0
+            completeList.append(lineList)
+            del lineList[:]
+ 
         else :
-            list[z] = jpcapFlag + list[z]
+            lineList.append(jpcapFlag + list[z])
             z = z + 1
+            lineLength = lineLength + 1
             
+            if lineLength > 15:
+                lineLength = 0
+                completeList.append(lineList)
+                del listList[:]    
         
-    return list
-        
+    return completeList
+

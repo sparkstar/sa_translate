@@ -120,6 +120,20 @@ section#content
 	padding: 20px;
 }
 
+section#contentLeft
+{
+        float : left;
+        width : 360px;
+        padding : 20px
+}
+
+section#contentRight
+{
+        float : left;
+        width : 360px;
+        padding : 20px;
+}
+
 aside#sidebar
 {
 	float: left;
