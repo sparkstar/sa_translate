@@ -10,6 +10,7 @@ def viewText(request, number):
     entries = Text.objects.get(textNumber = number)
     
     parsedText = re.findall('f...|..', entries.hexString)
+    text = []
     '''
     temptext = []
     text = []
@@ -29,8 +30,8 @@ def viewText(request, number):
     text = jpcapProcess(parsedText)
     
     tpl = loader.get_template('viewjp/viewjp.html')
-#    ctx = RequestContext(request, {'text':text})
-    ctx = RequestContext(request, {})
+    ctx = RequestContext(request, {'text':text, 'list':parsedText})
+#    ctx = RequestContext(request, {})
     return HttpResponse(tpl.render(ctx))
 
 
@@ -51,20 +52,28 @@ def jpcapProcess(list):
         elif list[z] == '04':
             jpcapFlag = "_"
 
-        elif list[z] == '0d':
+        elif list[z] == '0d' or list[z] == '00':
             lineLength = 0
-            completeList.append(lineList)
+            completeList.append(lineList[:])
             del lineList[:]
+            
+        elif list[z] == '0c' or list[z] == '0f':
+            pass
+        
  
         else :
-            lineList.append(jpcapFlag + list[z])
-            z = z + 1
-            lineLength = lineLength + 1
+            if list[z] >= '60' :
+                lineList.append(jpcapFlag + list[z])
+                lineLength = lineLength + 1
+            elif list[z] < '60' :
+                lineList.append(list[z])
+                lineLength = lineLength + 1
+            
             
             if lineLength > 15:
                 lineLength = 0
-                completeList.append(lineList)
-                del listList[:]    
-        
+                completeList.append(lineList[:])
+                del lineList[:]    
+        z = z + 1
     return completeList
 

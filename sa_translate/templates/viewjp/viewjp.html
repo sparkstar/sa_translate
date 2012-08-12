@@ -1,9 +1,21 @@
 {% include 'layout/header.html' %}
+<section id="contentLeft">
+<h4>일본어 텍스트</h4>
 {% for z in text %}
-    <div style="width : 360px">
-    { % for y in z % }
+    <div style="width : 400px">
+    {% for y in z %}
         <img src="{{media_url}}/media/images/resources/jp/{{ y }}.png" width=24 height=24 />
-    { % endfor %}
+    {% endfor %}
     </div>
 {% endfor %}
+<br />
+<h4>텍스트 코드</h4>
+{{list}}
+</section>
+<section id="contentRight">
+<h4>번역 윈도우</h4>
+<textarea style="width : 100%">
+</textarea>
+
+</section>
 {% include 'layout/footer.html' %}
