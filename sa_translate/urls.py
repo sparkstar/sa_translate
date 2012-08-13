@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, include, url
 
 from main.views import *
@@ -25,7 +26,9 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', 'main.views.mainpage'),
+    url(r'^viewtext/translatepost/$', 'viewjp.views.translatePost'),
     url(r'^viewtext/(?P<number>\d+)/$', 'viewjp.views.viewText'),
+    
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH+'/media'}),
 
 

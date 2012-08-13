@@ -19,9 +19,22 @@
     {% endfor %}
 </section>
 <section id="contentRight">
+<form method="post" action="/viewtext/translatepost/">{% csrf_token %}
 	<h4>번역 윈도우</h4>
-	<textarea style="width : 100%">
-	</textarea>
-
+	<textarea label for="translateText" name="translateText" style="width : 100%"></textarea>
+	<input type="submit" value="써넣기" />
+	<input type="hidden" name="number" label for="number" value="{{number}}" readonly="readonly" />
+</form>
+<br />
+<h4>번역된 텍스트들</h4>
+{% for z in translatedText %}
+    <div>
+        {{z.Contents}}
+    </div>
+{% endfor %}
+</section>
+<section id="content">
+<a href="/viewtext/{{ number|add:"-1" }}">이전</a>
+<a href="/viewtext/{{ number|add:"1" }}">다음</a>
 </section>
 {% include 'layout/footer.html' %}

@@ -1,39 +1,29 @@
 # Create your views here.
-
+# -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.template import RequestContext, loader
 
-from models import Text
+from models import translateText, Text
 import re
 
 def viewText(request, number):
     entries = Text.objects.get(textNumber = number)
     
     parsedText = re.findall('f...|..', entries.hexString)
-    text = []
-    '''
-    temptext = []
-    text = []
-    
-    z = 0
-    while z < len(parsedText):
-        if re.match('f.', parsedText[z]):
-            text.append(parsedText[z] + parsedText[z + 1])
-            z = z + 1
-        else:
-            text.append(parsedText[z])
-            
-        z = z + 1
- 
-    '''
-    
     text = jpcapProcess(parsedText)
     
+    translatedText = callTextlist(number)
+    
     tpl = loader.get_template('viewjp/viewjp.html')
-    ctx = RequestContext(request, {'text':text, 'list':parsedText})
+    ctx = RequestContext(request, {'text':text, 'list':parsedText, 'number':number, 'translatedText':translatedText})
 #    ctx = RequestContext(request, {})
     return HttpResponse(tpl.render(ctx))
 
+def callTextlist(number):
+    entries = translateText.objects.filter(textNumber = int(number)).order_by('-transDate')
+    
+    return entries
+    
 
 def jpcapProcess(list):
     jpcapFlag = ""
@@ -41,7 +31,6 @@ def jpcapProcess(list):
     completeList = []
     lineList = []
     
-    length = len(list)
     z = 0
     lineLength = 0
 
@@ -77,3 +66,12 @@ def jpcapProcess(list):
         z = z + 1
     return completeList
 
+def translatePost(request):
+    text = request.POST.get('translateText')
+    number = request.POST.get('number')
+    
+    translatedText = translateText(textNumber=number, Contents=text)
+    translatedText.save()
+    
+    return HttpResponse("저장 완료")
+    
