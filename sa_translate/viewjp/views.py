@@ -6,6 +6,11 @@ from django.template import RequestContext, loader
 from models import translateText, Text
 import re
 
+def mainview(request) :
+    tpl = loader.get_template('viewjp/mainview.html')
+    ctx = RequestContext(request, {})
+    return HttpResponse(tpl.render(ctx))
+
 def viewText(request, number):
     entries = Text.objects.get(textNumber = number)
     
@@ -74,4 +79,3 @@ def translatePost(request):
     translatedText.save()
     
     return HttpResponse("저장 완료")
-    

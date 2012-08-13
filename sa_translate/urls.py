@@ -26,8 +26,10 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', 'main.views.mainpage'),
-    url(r'^viewtext/translatepost/$', 'viewjp.views.translatePost'),
-    url(r'^viewtext/(?P<number>\d+)/$', 'viewjp.views.viewText'),
+    url(r'^surgingaura/$', 'viewjp.views.mainview'),
+    url(r'^surgingaura/viewtext/translatepost/$', 'viewjp.views.translatePost'),
+
+    url(r'^surgingaura/viewtext/(?P<number>\d+)/$', 'viewjp.views.viewText'),
     
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH+'/media'}),
 

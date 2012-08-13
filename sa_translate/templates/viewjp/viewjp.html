@@ -19,7 +19,7 @@
     {% endfor %}
 </section>
 <section id="contentRight">
-<form method="post" action="/viewtext/translatepost/">{% csrf_token %}
+<form method="post" action="/surgingaura/viewtext/translatepost/">{% csrf_token %}
 	<h4>번역 윈도우</h4>
 	<textarea label for="translateText" name="translateText" style="width : 100%"></textarea>
 	<input type="submit" value="써넣기" />
@@ -34,7 +34,12 @@
 {% endfor %}
 </section>
 <section id="content">
-<a href="/viewtext/{{ number|add:"-1" }}">이전</a>
-<a href="/viewtext/{{ number|add:"1" }}">다음</a>
+
+{% if not number == "1" %}
+	<a href="/surgingaura/viewtext/{{ number|add:"-1" }}">이전</a>
+{% endif %}
+{% if not number == "1685" %}
+	<a href="/surgingaura/viewtext/{{ number|add:"1" }}">다음</a>
+{% endif %}
 </section>
 {% include 'layout/footer.html' %}
