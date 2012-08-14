@@ -1,0 +1,10 @@
+{% include 'layout/header.html' %}
+<ul>
+{% for z in entries %}
+    {# Each "contact" is a Contact model object. #}
+    <li style="float : left; width : 94px;height:20px;line-height:20px">
+    <a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a>
+    </li>
+{% endfor %}
+</ul>
+{% include 'layout/footer.html' %}

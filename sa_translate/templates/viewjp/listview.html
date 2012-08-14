@@ -1,0 +1,24 @@
+{% include 'layout/header.html' %}
+
+{% for z in currentpage.object_list %}
+    {# Each "contact" is a Contact model object. #}
+    <a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a><br />
+{% endfor %}
+
+<div class="pagination">
+    <span class="step-links">
+        {% if currentpage.has_previous %}
+            <a href="/surgingaura/listview/{{ currentpage.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ currentpage.number }} of {{ currentpage.paginator.num_pages }}.
+        </span>
+
+        {% if currentpage.has_next %}
+            <a href="/surgingaura/listview/{{ currentpage.next_page_number }}">next</a>
+        {% endif %}
+    </span>
+</div>
+
+{% include 'layout/footer.html' %}

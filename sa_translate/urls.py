@@ -30,7 +30,12 @@ urlpatterns = patterns('',
     url(r'^surgingaura/viewtext/translatepost/$', 'viewjp.views.translatePost'),
 
     url(r'^surgingaura/viewtext/(?P<number>\d+)/$', 'viewjp.views.viewText'),
-    
+
+    url(r'^surgingaura/listview/$', 'viewjp.views.viewList'),
+    url(r'^surgingaura/listview/(?P<page>\d+)/$', 'viewjp.views.viewList'), 
+
+    url(r'^surgingaura/alllist/$', 'viewjp.views.allList'),
+
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH+'/media'}),
 
 

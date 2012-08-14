@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 from django.http import HttpResponse
 from django.template import RequestContext, loader
+from django.shortcuts import *
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from models import translateText, Text
 import re
@@ -11,7 +13,7 @@ def mainview(request) :
     ctx = RequestContext(request, {})
     return HttpResponse(tpl.render(ctx))
 
-def viewText(request, number):
+def viewText(request, number=1):
     entries = Text.objects.get(textNumber = number)
     
     parsedText = re.findall('f...|..', entries.hexString)
@@ -21,14 +23,32 @@ def viewText(request, number):
     
     tpl = loader.get_template('viewjp/viewjp.html')
     ctx = RequestContext(request, {'text':text, 'list':parsedText, 'number':number, 'translatedText':translatedText})
-#    ctx = RequestContext(request, {})
     return HttpResponse(tpl.render(ctx))
 
 def callTextlist(number):
     entries = translateText.objects.filter(textNumber = int(number)).order_by('-transDate')
     
     return entries
+
+def viewList(request, page=1):
+    entries = Text.objects.all()
+    paginator = Paginator(entries, 50)
     
+    try:
+        currentPage = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        currentPage = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        currentPage = paginator.page(paginator.num_pages)
+    
+    return render_to_response('viewjp/listview.html', {"currentpage": currentPage})
+
+def allList(request):
+    entries = Text.objects.all()
+    
+    return render_to_response('viewjp/alllist.html', {"entries": entries})
 
 def jpcapProcess(list):
     jpcapFlag = ""
@@ -78,4 +98,4 @@ def translatePost(request):
     translatedText = translateText(textNumber=number, Contents=text)
     translatedText.save()
     
-    return HttpResponse("저장 완료")
+    return redirect('/surgingaura/viewtext/' + number)
