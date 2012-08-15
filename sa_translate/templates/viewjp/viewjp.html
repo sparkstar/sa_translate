@@ -23,14 +23,14 @@
 	<h4>번역 윈도우</h4>
 	<textarea label for="translateText" name="translateText" style="width : 100%"></textarea>
 	<input type="submit" value="써넣기" />
-	<input type="text" maxlength=15>
+	닉네임 : <input type="text" name="author" maxlength=15>
 	<input type="hidden" name="number" label for="number" value="{{number}}" readonly="readonly" />
 </form>
 <br />
 <h4>번역된 텍스트들</h4>
 {% for z in translatedText %}
-    <div>
-        {{z.Contents}}
+    <div style="height : 20px; line-height:20px;">
+        {{z.userID}} : {{z.Contents}}
     </div>
 {% endfor %}
 </section>

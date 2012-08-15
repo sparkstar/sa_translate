@@ -94,8 +94,9 @@ def jpcapProcess(list):
 def translatePost(request):
     text = request.POST.get('translateText')
     number = request.POST.get('number')
+    author = request.POST.get('author')
     
-    translatedText = translateText(textNumber=number, Contents=text)
+    translatedText = translateText(textNumber=number, Contents=text, userID=author)
     translatedText.save()
     
     return redirect('/surgingaura/viewtext/' + number)
