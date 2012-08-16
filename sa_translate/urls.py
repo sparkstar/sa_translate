@@ -35,6 +35,8 @@ urlpatterns = patterns('',
     url(r'^surgingaura/listview/(?P<page>\d+)/$', 'viewjp.views.viewList'), 
 
     url(r'^surgingaura/alllist/$', 'viewjp.views.allList'),
+    
+    url(r'^surgingaura/download/$', 'viewjp.views.downloadIps'),
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH+'/media'}),
 
