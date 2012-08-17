@@ -1,4 +1,13 @@
 {% include 'layout/header.html' %}
+<script type="text/javascript">
+    $(document).ready(function()
+            {
+            $(":button").click(function()
+                {
+                $("#translateTextInput").val($("#translateTextInput").val() + this.name);
+                });
+            });
+</script>
 <section id="contentLeft">
 <h4>일본어 텍스트</h4>
 {% for z in text %}
@@ -20,19 +29,57 @@
 </section>
 <section id="contentRight">
 <form method="post" action="/surgingaura/viewtext/translatepost/">{% csrf_token %}
+    
 	<h4>번역 윈도우</h4>
-	<textarea label for="translateText" name="translateText" style="width : 100%"></textarea>
+	<input type="button" value="0" name="{0}"/>
+	<input type="button" value="5" name="{5}"/>
+	<input type="button" value="9" name="{9}"/>
+	<input type="button" value="A" name="{A}"/>
+	<input type="button" value="B" name="{B}"/>
+	<input type="button" value="C" name="{C}"/>
+	<input type="button" value="D" name="{D}"/>
+	<input type="button" value="E" name="{E}"/>
+	<br />
+	<input type="button" value="固" name="{S}"/>
+    <input type="button" value="念" name="{D}"/>
+    <input type="button" value="光" name="{F}"/>
+    <input type="button" value="闇" name="{G}"/>
+    <input type="button" value="液" name="{H}"/>
+    <input type="button" value="氣" name="{J}"/>
+    <br />
+    <input type="button" value="무기" name="{R}"/>
+    <input type="button" value="갑옷" name="{T}"/>
+    <input type="button" value="주머니" name="{Y}"/>
+    <input type="button" value="뚜껑" name="{U}"/>
+    <input type="button" value="망토" name="{I}"/>
+    <input type="button" value="주법서" name="{O}"/>
+    <input type="button" value="방패" name="{P}"/>
+    <input type="button" value="목걸이" name="{L}"/>
+
+	<textarea label for="translateText" id="translateTextInput" name="translateText" style="width : 100%"></textarea>
 	<input type="submit" value="써넣기" />
 	닉네임 : <input type="text" name="author" maxlength=15>
 	<input type="hidden" name="number" label for="number" value="{{number}}" readonly="readonly" />
 </form>
 <br />
 <h4>번역된 텍스트들</h4>
-{% for z in translatedText %}
-    <div style="height : 20px; line-height:20px;">
-        {{z.userID}} : {{z.Contents}}
-    </div>
-{% endfor %}
+{% if translatedText|length_is:"0" %}
+        <div style="height : 20px; line-height:20px;">
+            텍스트가 없습니다.
+        </div>
+{% else %}
+    {% for z in translatedText %}
+        {% if z.userID|length_is:"0" %}
+            <div style=" line-height:20px;">
+                Anonymous : {{z.Contents}}
+            </div>
+        {% else %}
+            <div style=" line-height:20px;">
+                {{z.userID}} : {{z.Contents}}
+            </div>
+        {% endif %}        
+    {% endfor %}
+{% endif %}
 </section>
 <section id="content">
 
