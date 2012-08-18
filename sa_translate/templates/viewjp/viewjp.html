@@ -31,30 +31,38 @@
 <form method="post" action="/surgingaura/viewtext/translatepost/">{% csrf_token %}
     
 	<h4>번역 윈도우</h4>
-	<input type="button" value="0" name="{0}"/>
-	<input type="button" value="5" name="{5}"/>
-	<input type="button" value="9" name="{9}"/>
-	<input type="button" value="A" name="{A}"/>
-	<input type="button" value="B" name="{B}"/>
-	<input type="button" value="C" name="{C}"/>
-	<input type="button" value="D" name="{D}"/>
-	<input type="button" value="E" name="{E}"/>
+	<input type="button" value="0" name="{(0)}"/>
+	<input type="button" value="5" name="{(5)}"/>
+	<input type="button" value="9" name="{(9)}"/>
+	<input type="button" value="A" name="{(A)}"/>
+	<input type="button" value="B" name="{(B)}"/>
+	<input type="button" value="C" name="{(C)}"/>
+	<input type="button" value="D" name="{(D)}"/>
+	<input type="button" value="E" name="{(E)}"/>
 	<br />
-	<input type="button" value="固" name="{S}"/>
-    <input type="button" value="念" name="{D}"/>
-    <input type="button" value="光" name="{F}"/>
-    <input type="button" value="闇" name="{G}"/>
-    <input type="button" value="液" name="{H}"/>
-    <input type="button" value="氣" name="{J}"/>
+	<input type="button" value="「" name="{(G)}"/>
+	<input type="button" value="」" name="{(H)}"/>
+	<input type="button" value="《" name="{(I)}"/>
+	<input type="button" value="》" name="{(J)}"/>
+	<input type="button" value="·" name="{(K)}"/>
+	<input type="button" value="…" name="{(L)}"/>
+	<br />
+		
+	<input type="button" value="固" name="{(M)}"/>
+    <input type="button" value="念" name="{(N)}"/>
+    <input type="button" value="光" name="{(O)}"/>
+    <input type="button" value="闇" name="{(P)}"/>
+    <input type="button" value="液" name="{(Q)}"/>
+    <input type="button" value="氣" name="{(R)}"/>
     <br />
-    <input type="button" value="무기" name="{R}"/>
-    <input type="button" value="갑옷" name="{T}"/>
-    <input type="button" value="주머니" name="{Y}"/>
-    <input type="button" value="뚜껑" name="{U}"/>
-    <input type="button" value="망토" name="{I}"/>
-    <input type="button" value="주법서" name="{O}"/>
-    <input type="button" value="방패" name="{P}"/>
-    <input type="button" value="목걸이" name="{L}"/>
+    <input type="button" value="무기" name="{(S)}"/>
+    <input type="button" value="방패" name="{(T)}"/>
+    <input type="button" value="갑옷" name="{(U)}"/>
+    <input type="button" value="망토" name="{(V)}"/>
+    <input type="button" value="목걸이" name="{(W)}"/>
+    <input type="button" value="약병" name="{(X)}"/>
+    <input type="button" value="주법서" name="{(Y)}"/>
+    <input type="button" value="뚜껑" name="{(Z)}"/>
 
 	<textarea label for="translateText" id="translateTextInput" name="translateText" style="width : 100%"></textarea>
 	<input type="submit" value="써넣기" />
@@ -74,8 +82,21 @@
                 Anonymous : {{z.Contents}}
             </div>
         {% else %}
+
+            {% if z.choosed == 0 %}
             <div style=" line-height:20px;">
+            {% else %}
+            <div style=" line-height:20px;background-color : #440000;">
+            {% endif %}
                 {{z.userID}} : {{z.Contents}}
+                {% if user.is_authenticated %}
+                <form method="post" action="/surgingaura/viewtext/choosetext/">{% csrf_token %}
+					<input type="hidden" name="textNumber" label for="textNumber" value="{{number}}" readonly="readonly" />
+					<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
+					<input type="submit" value="선택" />
+				</form>
+				{% endif %}
+	
             </div>
         {% endif %}        
     {% endfor %}

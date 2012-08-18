@@ -28,7 +28,8 @@ urlpatterns = patterns('',
     url(r'^$', 'main.views.mainpage'),
     url(r'^surgingaura/$', 'viewjp.views.mainview'),
     url(r'^surgingaura/viewtext/translatepost/$', 'viewjp.views.translatePost'),
-
+    url(r'^surgingaura/viewtext/choosetext/$', 'viewjp.views.chooseTranslated'),
+    
     url(r'^surgingaura/viewtext/(?P<number>\d+)/$', 'viewjp.views.viewText'),
 
     url(r'^surgingaura/listview/$', 'viewjp.views.viewList'),
@@ -37,6 +38,7 @@ urlpatterns = patterns('',
     url(r'^surgingaura/alllist/$', 'viewjp.views.allList'),
     
     url(r'^surgingaura/download/$', 'viewjp.views.downloadIps'),
+    url(r'^surgingaura/downloadfull/$', 'viewjp.views.downloadFullIps'),
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH+'/media'}),
 

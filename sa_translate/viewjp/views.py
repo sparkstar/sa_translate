@@ -6,7 +6,7 @@ from django.shortcuts import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from binascii import unhexlify
 
-from models import translateText, Text
+from models import translateText, Text, hash
 import re
 from StringIO import StringIO
 
@@ -22,7 +22,7 @@ def viewText(request, number=1):
     text = jpcapProcess(parsedText)
     
     translatedText = callTextlist(number)
-    
+
     tpl = loader.get_template('viewjp/viewjp.html')
     ctx = RequestContext(request, {'text':text, 'list':parsedText, 'number':number, 'translatedText':translatedText})
     return HttpResponse(tpl.render(ctx))
@@ -31,6 +31,21 @@ def callTextlist(number):
     entries = translateText.objects.filter(textNumber = int(number)).order_by('-transDate')
     
     return entries
+
+def chooseTranslated(request):
+    req_translateNumber = request.POST.get('translatedNumber')
+    req_textNumber = request.POST.get('textNumber')
+    
+    translateText.objects.filter(textNumber = req_textNumber).update(choosed = False)
+    
+    entry = translateText.objects.get(id = req_translateNumber)
+    entry.choosed = True
+    
+    entry.save()
+    
+    return redirect('/surgingaura/viewtext/' + req_textNumber)
+        
+
 
 def viewList(request, page=1):
     entries = Text.objects.all()
@@ -109,6 +124,162 @@ def downloadIps(request):
     HANJA_POINTER = 426588 #한자가 위치하는 부분
     FONT_POSITION = 2097153
 
+    patchList = createIps()
+    
+    patchList.append(getTranslatedText621())
+    
+    patchList.append('\x45\x4f\x46')
+    
+    patchList = "".join(patchList)
+    
+    ips = StringIO()
+    ips.write(patchList)
+    
+    
+    response = HttpResponse(mimetype="application/ips")
+    response["Content-Disposition"] = "attachment; filename=sao.ips"
+    
+    response.write(ips.getvalue())
+    
+    return response
+
+def downloadFullIps(request):
+    ADD_TEXT_POS = 2293760 #번역되는 텍스트가 롬에 추가될 위치
+    HANJA_POINTER = 426588 #한자가 위치하는 부분
+    FONT_POSITION = 2097153
+
+    patchList = createIps()
+    
+    patchList.append(getTranslatedText())
+    
+    patchList.append('\x45\x4f\x46')
+    
+    patchList = "".join(patchList)
+    
+    ips = StringIO()
+    ips.write(patchList)
+    
+    
+    response = HttpResponse(mimetype="application/ips")
+    response["Content-Disposition"] = "attachment; filename=sao.ips"
+    
+    response.write(ips.getvalue())
+    
+    return response
+
+def textcodeConverter(textList):
+    z = 0
+    
+    while z < len(textList):
+        if re.match("7b28..297d", textList[z]):
+            textList[z] = hash[textList[z]]
+        
+        z = z + 1
+        
+    return textList
+
+def getTranslatedText():
+    
+    newTextStartPos = "230000"
+    patchList = []
+    
+    entries = translateText.objects.filter(choosed = True)
+
+    for z in entries:
+    
+        entries2 = Text.objects.get(textNumber = z.textNumber)
+        textPtr = "%06x" % entries2.textPos
+        patchList.append(unhexlify(textPtr))
+        
+        textLength = "\x00\x03" # 3바이트 주소값 길이는 항상 3
+        patchList.append(textLength)
+        
+        textContents = newTextStartPos # 새로운 텍스트의 위치
+        patchList.append(unhexlify(textContents))
+        
+        textPos = newTextStartPos
+        patchList.append(unhexlify(textPos))
+        
+        textList = textcodeConverter(re.findall("(7b28..297d|[b-c].[a-f].|[0-99].)", "%04x" % (int(z.Contents.encode("euc-kr").encode("hex"), 16))))
+        textLength = len(re.findall("(..)", "".join(textList))) + 5
+        
+        z = 0
+        
+        while True:
+            if len(textList[z]) == 4:
+                t = re.findall("(..)", "%04x" % (int(textList[z], 16) - 0xb0a0))
+                t2 = (int(t[0], 16) * 94) + (int(t[1], 16) - 1) + 61440
+                textList[z] = "%04x" % t2
+        
+            z = z + 1
+        
+            if len(textList) <= z:
+                break
+        
+        
+        fullTextLength = ("%06x" % (int(textPos, 16) + textLength))
+        textPrefix = "1700" + fullTextLength
+        
+        patchList.append(unhexlify("%04x" % textLength))
+        patchList.append(unhexlify(textPrefix))
+        patchList.append(unhexlify("".join(textList)))
+        
+        newTextStartPos = "%06x" % (int(newTextStartPos, 16) + textLength)
+        
+        
+    
+    patchList = "".join(patchList)
+    
+    return patchList
+
+def getTranslatedText621():
+    
+    newTextStartPos = "230000"
+    patchList = []
+    
+    entries = translateText.objects.get(textNumber = 621)
+    entries2 = Text.objects.get(textNumber = 621)
+    
+    textPtr = "%06x" % entries2.textPos
+    patchList.append(unhexlify(textPtr))
+    
+    textLength = "\x00\x03" # 3바이트 주소값 길이는 항상 3
+    patchList.append(textLength)
+    
+    textContents = newTextStartPos # 새로운 텍스트의 위치
+    patchList.append(unhexlify(textContents))
+    
+    textPos = newTextStartPos
+    patchList.append(unhexlify(textPos))
+    
+    textList = textcodeConverter(re.findall("([b-c]...|[0-99].)", "%04x" % (int(entries.Contents.encode("euc-kr").encode("hex"), 16))))
+    textLength = len(re.findall("(..)", "".join(textList))) + 5
+    
+    z = 0
+    
+    while True:
+        if len(textList[z]) == 4:
+            t = re.findall("(..)", "%04x" % (int(textList[z], 16) - 0xb0a0))
+            t2 = (int(t[0], 16) * 94) + (int(t[1], 16) - 1) + 61440
+            textList[z] = "%04x" % t2
+    
+        z = z + 1
+    
+        if len(textList) <= z:
+            break
+    
+    
+    textPrefix = "1700" + ("%06x" % (int(textPos, 16) + textLength))
+    
+    patchList.append(unhexlify("%04x" % textLength))
+    patchList.append(unhexlify(textPrefix))
+    patchList.append(unhexlify("".join(textList)))
+    
+    patchList = "".join(patchList)
+    
+    return patchList
+    
+def createIps():
     patchList = []
     patchList.append('\x50\x41\x54\x43\x48') # PATCH
     
@@ -159,53 +330,5 @@ def downloadIps(request):
     patchList.append('\xda\x47') # 추가되는 폰트의 길이
     patchList.append('\x00') # 추가되는 폰트의 길이
 
-    entries = translateText.objects.get(textNumber = 621)
-    entries2 = Text.objects.get(textNumber = 621)
-    
-    textPtr = "%06x" % entries2.textPos
-    patchList.append(unhexlify(textPtr))
-    
-    textLength = "\x00\x03"
-    patchList.append(textLength)
-    
-    textContents = "\x23\x00\x00"
-    patchList.append(textContents)
-    
-    textPos = "\x23\x00\x00"
-    patchList.append(textPos)  
-     
-    wordList = re.findall("([b-c]...|[0-99].)", "%04x" % (int(entries.Contents.encode("euc-kr").encode("hex"), 16)))
-    z = 0
-    
-    while True:
-        if len(wordList[z]) == 4:
-            t = re.findall("(..)", "%04x" % (int(wordList[z], 16) - 0xb0a0))
-            t2 = (int(t[0], 16) * 94) + (int(t[1], 16) - 1) + 61440
-            wordList[z] = "%04x" % t2
-    
-        z = z + 1
-    
-        if len(wordList) <= z:
-            break
-    
-    textLength = "%04x" % (len(re.findall("(..)", "".join(wordList))))
-    patchList.append(unhexlify(textLength))
-            
-    patchList.append(unhexlify("".join(wordList)))
-    
-    patchList.append('\x45\x4f\x46')
-    
-    patchList = "".join(patchList)
-    
-    ips = StringIO()
-    
-    ips.write(patchList)
-    
-    
-    response = HttpResponse(mimetype="application/ips")
-    response["Content-Disposition"] = "attachment; filename=sao.ips"
-    
-    response.write(ips.getvalue())
-    
-    return response
+    return patchList
     
