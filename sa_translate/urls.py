@@ -29,7 +29,8 @@ urlpatterns = patterns('',
     url(r'^surgingaura/$', 'viewjp.views.mainview'),
     url(r'^surgingaura/viewtext/translatepost/$', 'viewjp.views.translatePost'),
     url(r'^surgingaura/viewtext/choosetext/$', 'viewjp.views.chooseTranslated'),
-    
+    url(r'^surgingaura/viewtext/unchoosetext/$', 'viewjp.views.unchooseTranslated'),   
+    url(r'^surgingaura/viewtext/deltranslatetext/$', 'viewjp.views.delTranslated'),     
     url(r'^surgingaura/viewtext/(?P<number>\d+)/$', 'viewjp.views.viewText'),
 
     url(r'^surgingaura/listview/$', 'viewjp.views.viewList'),

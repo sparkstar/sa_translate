@@ -18,6 +18,17 @@
     </div>
 {% endfor %}
 <br />
+<h4>선택된 한국어 텍스트</h4>
+    <div style="width : 400px">
+	{% if not choosedText|length_is:"0" %}
+		{% for z in choosedText %}
+	        <img src="{{media_url}}/media/images/resources/kr/{{ z }}.png" width=20 height=20 alt={{z}}/>
+	    {% endfor %}    
+    {% else %}
+    	선택된 텍스트가 없습니다.
+    {% endif %}
+    </div>    
+<br />
 <h4>텍스트 코드</h4>
     {% for z in list %}
         {% if z >= '00' and z <= '20' %}
@@ -77,12 +88,6 @@
         </div>
 {% else %}
     {% for z in translatedText %}
-        {% if z.userID|length_is:"0" %}
-            <div style=" line-height:20px;">
-                Anonymous : {{z.Contents}}
-            </div>
-        {% else %}
-
             {% if z.choosed == 0 %}
             <div style=" line-height:20px;">
             {% else %}
@@ -95,8 +100,16 @@
 					<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
 					<input type="submit" value="선택" />
 				</form>
-				{% endif %}
-	
+                <form method="post" action="/surgingaura/viewtext/unchoosetext/">{% csrf_token %}
+					<input type="hidden" name="textNumber" label for="textNumber" value="{{number}}" readonly="readonly" />
+					<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
+					<input type="submit" value="해제" />
+				</form>
+                <form method="post" action="/surgingaura/viewtext/deltranslatetext/">{% csrf_token %}
+					<input type="hidden" name="textNumber" label for="textNumber" value="{{number}}" readonly="readonly" />
+					<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
+					<input type="submit" value="삭제" />
+				</form>
             </div>
         {% endif %}        
     {% endfor %}

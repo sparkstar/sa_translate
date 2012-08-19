@@ -21,10 +21,23 @@ def viewText(request, number=1):
     parsedText = re.findall('f...|..', entries.hexString)
     text = jpcapProcess(parsedText)
     
+    choosedTextNumber = -1
+    
     translatedText = callTextlist(number)
+    
+    for z in range(len(translatedText)):
+        if translatedText[z].choosed == True :
+            choosedTextNumber = z
+            break;
+    
+    choosedText = []
+    
+    if not choosedTextNumber == -1 :
+        choosedText = unicodetosatext(translatedText[z].Contents)    
+    
 
     tpl = loader.get_template('viewjp/viewjp.html')
-    ctx = RequestContext(request, {'text':text, 'list':parsedText, 'number':number, 'translatedText':translatedText})
+    ctx = RequestContext(request, {'text':text, 'list':parsedText, 'number':number, 'translatedText':translatedText, 'choosedText':choosedText})
     return HttpResponse(tpl.render(ctx))
 
 def callTextlist(number):
@@ -33,19 +46,37 @@ def callTextlist(number):
     return entries
 
 def chooseTranslated(request):
-    req_translateNumber = request.POST.get('translatedNumber')
-    req_textNumber = request.POST.get('textNumber')
-    
-    translateText.objects.filter(textNumber = req_textNumber).update(choosed = False)
-    
-    entry = translateText.objects.get(id = req_translateNumber)
-    entry.choosed = True
-    
-    entry.save()
-    
+    if request.user.is_authenticated():
+        req_translateNumber = request.POST.get('translatedNumber')
+        req_textNumber = request.POST.get('textNumber')
+        
+        translateText.objects.filter(textNumber = req_textNumber).update(choosed = False)
+        
+        entry = translateText.objects.get(id = req_translateNumber)
+        entry.choosed = True
+        
+        entry.save()
+        
     return redirect('/surgingaura/viewtext/' + req_textNumber)
         
+def unchooseTranslated(request):
+    if request.user.is_authenticated():    
+        req_translateNumber = request.POST.get('translatedNumber')
+        req_textNumber = request.POST.get('textNumber')
+        
+        translateText.objects.filter(textNumber = req_textNumber).update(choosed = False)
 
+    
+    return redirect('/surgingaura/viewtext/' + req_textNumber)
+
+def delTranslated(request):
+    if request.user.is_authenticated():    
+        req_translateNumber = request.POST.get('translatedNumber')
+        req_textNumber = request.POST.get('textNumber')
+        
+        translateText.objects.get(id = req_translateNumber).delete()
+
+    return redirect('/surgingaura/viewtext/' + req_textNumber)
 
 def viewList(request, page=1):
     entries = Text.objects.all()
@@ -62,10 +93,44 @@ def viewList(request, page=1):
     
     return render_to_response('viewjp/listview.html', {"currentpage": currentPage})
 
-def allList(request):
-    entries = Text.objects.all()
+def unicodetosatext(translatedText):
+    translatedText = ("%04x" % (int(translatedText.encode("euc-kr").encode("hex"), 16)))
+    translatedText = re.findall("(7b28..297d|[b-c].[a-f].|[0-99].)", translatedText)
+    translatedText = textcodeConverter(translatedText)
     
-    return render_to_response('viewjp/alllist.html', {"entries": entries})
+    z = 0
+        
+    while True:
+        if len(translatedText[z]) == 4:
+            t = re.findall("(..)", "%04x" % (int(translatedText[z], 16) - 0xb0a0))
+            t2 = (int(t[0], 16) * 94) + (int(t[1], 16) - 1) + 61440
+            translatedText[z] = "%04x" % t2
+    
+        z = z + 1
+    
+        if len(translatedText) <= z:
+            break
+        
+    return translatedText
+
+def allList(request):
+    state = request.POST.get('state')
+    
+    entries = Text.objects.all()
+    translatedCount = translateText.objects.filter(choosed = True).count()
+    translatedProgress = translatedCount / 1685
+
+
+    
+    return render_to_response('viewjp/alllist.html', {"entries": entries, "translatedCount":translatedCount, "translatedProgress":translatedProgress })
+
+'''
+   entries = range(1, 1686)
+    translatedCount = translateText.objects.filter(choosed = True).count()
+    translatedProgress = translatedCount / 1685
+    
+    return render_to_response('viewjp/alllist.html', {"entries": entries, "translatedCount":translatedCount, "translatedProgress":translatedProgress})
+'''
 
 def jpcapProcess(list):
     jpcapFlag = ""
@@ -112,6 +177,8 @@ def translatePost(request):
     text = request.POST.get('translateText')
     number = request.POST.get('number')
     author = request.POST.get('author')
+    if len(author) == 0 :
+        author = "Anonymous"
     
     translatedText = translateText(textNumber=number, Contents=text, userID=author)
     translatedText.save()
