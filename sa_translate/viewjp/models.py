@@ -271,6 +271,7 @@ class Text(models.Model):
     unknown1 = models.IntegerField()
     unknown2 = models.IntegerField()
     hexString = models.CharField(max_length=255)
+    translatedNumber = models.IntegerField(default=0, null=False)
 
 class translateText(models.Model):
     textNumber = models.IntegerField(null=False)

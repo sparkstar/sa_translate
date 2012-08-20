@@ -2,12 +2,18 @@
 {% if user.is_authenticated %}
 	<a href="/surgingaura/downloadfull/">실시간 IPS 다운로드</a>
 {% endif %}
-<h4>진척도 : {{ translatedProgress }}	%, 번역 {{ translatedCount }} / 미번역 문장 확인 / 전체 1685 </h4>
+<h4>진척도 : {{ translatedProgress }}	%, 번역 {{ translatedCount }} / 전체 1685 </h4>
 
 <ul>
 {% for z in entries %}
     <li style="float : left; width : 94px;height:20px;line-height:20px">
-    <a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a>
+    
+    {% if z.translatedNumber == 0 %}
+		<a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a> - N
+    {% else %}
+		<a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a> - <font color="red">Y</font>
+    {% endif %}
+
     </li>
 {% endfor %}
 </ul>

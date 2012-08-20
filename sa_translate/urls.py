@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import patterns, include, url
 
-from main.views import *
-from viewjp.views import *
+from sa_translate.main.views import *
+from sa_translate.viewjp.views import *
 
 import os
 ROOT_PATH = os.path.dirname(__file__)
@@ -25,21 +25,22 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
 
-    url(r'^$', 'main.views.mainpage'),
-    url(r'^surgingaura/$', 'viewjp.views.mainview'),
+    url(r'^$', 'sa_translate.main.views.mainpage'),
+    url(r'^surgingaura/$', 'sa_translate.viewjp.views.mainview'),
     
-    url(r'^surgingaura/viewtext/translatepost/$', 'viewjp.views.translatePost'),
-    url(r'^surgingaura/viewtext/choosetext/$', 'viewjp.views.chooseTranslated'),
-    url(r'^surgingaura/viewtext/unchoosetext/$', 'viewjp.views.unchooseTranslated'),   
-    url(r'^surgingaura/viewtext/deltranslatetext/$', 'viewjp.views.delTranslated'),     
-    url(r'^surgingaura/viewtext/(?P<number>\d+)/$', 'viewjp.views.viewText'),
+    url(r'^surgingaura/viewtext/translatepost/$', 'sa_translate.viewjp.views.translatePost'),
+    url(r'^surgingaura/viewtext/choosetext/$', 'sa_translate.viewjp.views.chooseTranslated'),
+    url(r'^surgingaura/viewtext/unchoosetext/$', 'sa_translate.viewjp.views.unchooseTranslated'),   
+    url(r'^surgingaura/viewtext/deltranslatetext/$', 'sa_translate.viewjp.views.delTranslated'),     
+    url(r'^surgingaura/viewtext/(?P<number>\d+)/$', 'sa_translate.viewjp.views.viewText'),
 
-    url(r'^surgingaura/listview/$', 'viewjp.views.viewList'),
-    url(r'^surgingaura/listview/(?P<page>\d+)/$', 'viewjp.views.viewList'), 
+    url(r'^surgingaura/listview/$', 'sa_translate.viewjp.views.viewList'),
+    url(r'^surgingaura/listview/(?P<page>\d+)/$', 'sa_translate.viewjp.views.viewList'), 
 
-    url(r'^surgingaura/alllist/$', 'viewjp.views.allList'),
+    url(r'^surgingaura/alllist/$', 'sa_translate.viewjp.views.allList'),
+
     
-    url(r'^surgingaura/downloadfull/$', 'viewjp.views.downloadFullIps'),
+    url(r'^surgingaura/downloadfull/$', 'sa_translate.viewjp.views.downloadFullIps'),
 
     url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {'document_root': ROOT_PATH+'/media'}),
 

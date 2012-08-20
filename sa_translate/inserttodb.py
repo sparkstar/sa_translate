@@ -15,7 +15,8 @@ create table if not exists "text"
     textpt int not null,
     unknown1 int not null,
     unknown2 int not null,
-    string text not null
+    string text not null,
+    translatedNumber int not null
 );
 '''
 
@@ -33,7 +34,7 @@ p = re.compile(regexpform)
 list = p.findall(buffer)
 
 for a in range(len(list)):
-    t =  (list[a][0].decode("hex"), list[a][0].decode("hex"), list[a][1].decode("hex"), list[a][2].decode("hex"), list[a][3].decode("hex"), list[a][4].decode("hex"), list[a][5])
-    cursor.execute('''insert into viewjp_text values(?,?,?,?,?,?,?)''', t)
+    t =  (list[a][0].decode("hex"), list[a][0].decode("hex"), list[a][1].decode("hex"), list[a][2].decode("hex"), list[a][3].decode("hex"), list[a][4].decode("hex"), list[a][5], 0)
+    cursor.execute('''insert into viewjp_text values(?,?,?,?,?,?,?,?)''', t)
 dbconn.commit()
 #---------------------------------------------------------#

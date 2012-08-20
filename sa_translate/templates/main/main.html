@@ -1,9 +1,10 @@
 {% include 'layout/header.html' %}
 
 <section id="content">
+{% autoescape off %}
 <h4>{{entries.Title}}</h4>
 <p>{{entries.Contents}}</p>
-            
+{% endautoescape %}
 </section>
 
 {% include 'layout/footer.html' %}

@@ -5,6 +5,7 @@ from django.template import RequestContext, loader
 from django.shortcuts import *
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from binascii import unhexlify
+from django.db.models import Q
 
 from models import translateText, Text, hash
 import re
@@ -54,7 +55,11 @@ def chooseTranslated(request):
         entry = translateText.objects.get(id = req_translateNumber)
         entry.choosed = True
         
+        entry_text = Text.objects.get(id = req_textNumber)
+        entry_text.translatedNumber = req_translateNumber
+        
         entry.save()
+        entry_text.save()
         
     return redirect('/surgingaura/viewtext/' + req_textNumber)
         
@@ -64,6 +69,9 @@ def unchooseTranslated(request):
         
         translateText.objects.filter(textNumber = req_textNumber).update(choosed = False)
 
+        entry_text = Text.objects.get(id = req_textNumber)
+        entry_text.translatedNumber = 0
+        entry_text.save()
     
     return redirect('/surgingaura/viewtext/' + req_textNumber)
 
@@ -71,6 +79,10 @@ def delTranslated(request):
     if request.user.is_authenticated():    
         req_translateNumber = request.POST.get('translatedNumber')
         req_textNumber = request.POST.get('textNumber')
+        
+        entry_text = Text.objects.get(id = req_textNumber )
+        if entry_text.translatedNumber == int(req_translateNumber) :
+            return redirect('/surgingaura/viewtext/' + req_textNumber)
         
         translateText.objects.get(id = req_translateNumber).delete()
 
@@ -112,8 +124,6 @@ def unicodetoSatext(translatedText):
     return translatedText
 
 def allList(request):
-    state = request.POST.get('state')
-    
     entries = Text.objects.all()
     translatedCount = translateText.objects.filter(choosed = True).count()
     translatedProgress = translatedCount / 1685
