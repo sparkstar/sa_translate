@@ -88,30 +88,30 @@
         </div>
 {% else %}
     {% for z in translatedText %}
-            {% if z.choosed == 0 %}
+        {% if z.choosed == 0 %}
             <div style=" line-height:20px;">
-            {% else %}
+        {% else %}
             <div style=" line-height:20px;background-color : #440000;">
-            {% endif %}
+        {% endif %}
                 {{z.userID}} : {{z.Contents}}
-                {% if user.is_authenticated %}
+            {% if user.is_authenticated %}
                 <form method="post" action="/surgingaura/viewtext/choosetext/">{% csrf_token %}
-					<input type="hidden" name="textNumber" label for="textNumber" value="{{number}}" readonly="readonly" />
-					<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
-					<input type="submit" value="선택" />
-				</form>
+    				<input type="hidden" name="textNumber" label for="textNumber" value="{{number}}" readonly="readonly" />
+    				<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
+    				<input type="submit" value="선택" />
+    			</form>
                 <form method="post" action="/surgingaura/viewtext/unchoosetext/">{% csrf_token %}
-					<input type="hidden" name="textNumber" label for="textNumber" value="{{number}}" readonly="readonly" />
-					<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
-					<input type="submit" value="해제" />
-				</form>
+    				<input type="hidden" name="textNumber" label for="textNumber" value="{{number}}" readonly="readonly" />
+    				<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
+    				<input type="submit" value="해제" />
+    			</form>
                 <form method="post" action="/surgingaura/viewtext/deltranslatetext/">{% csrf_token %}
-					<input type="hidden" name="textNumber" label for="textNumber" value="{{number}}" readonly="readonly" />
-					<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
-					<input type="submit" value="삭제" />
-				</form>
-            </div>
-        {% endif %}        
+    				<input type="hidden" name="textNumber" label for="textNumber" value="{{number}}" readonly="readonly" />
+    				<input type="hidden" name="translatedNumber" label for="translatedNumber" value="{{z.id}}" readonly="readonly" />
+    				<input type="submit" value="삭제" />
+    			</form>
+        {% endif %}
+                </div>        
     {% endfor %}
 {% endif %}
 </section>
