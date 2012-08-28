@@ -124,11 +124,24 @@ def unicodetoSatext(translatedText):
     return translatedText
 
 def allList(request):
-    entries = Text.objects.all()
     translatedCount = translateText.objects.filter(choosed = True).count()
-    translatedProgress = translatedCount / 1685
+    translatedProgress = round(float(translatedCount) / 1685 * 100, 3)
     
-    return render_to_response('viewjp/alllist.html', {"entries": entries, "translatedCount":translatedCount, "translatedProgress":translatedProgress })
+    translateList = []
+    translateObj = translateText.objects
+    
+    for z in range(1,1686):
+        Yflag = "N"
+        if translateObj.filter(choosed = True, textNumber = z).count() == 1:
+            Yflag = "Y"
+        elif translateObj.filter(textNumber = z).count() > 0 :
+            Yflag = "M"
+        else:
+            Yflag = "N"
+        
+        translateList.append([Yflag, z])
+    
+    return render_to_response('viewjp/alllist.html', { "translateList":translateList, "translatedCount":translatedCount, "translatedProgress":translatedProgress })
 
 def jpcapProcess(list):
     jpcapFlag = ""

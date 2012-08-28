@@ -5,15 +5,18 @@
 <h4>진척도 : {{ translatedProgress }}	%, 번역 {{ translatedCount }} / 전체 1685 </h4>
 
 <ul>
-{% for z in entries %}
-    <li style="float : left; width : 94px;height:20px;line-height:20px">
-    
-    {% if z.translatedNumber == 0 %}
-		<a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a> - N
-    {% else %}
-		<a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a> - <font color="red">Y</font>
-    {% endif %}
 
+{% for z in translateList %}
+    <li style="float : left; width : 94px;height:20px;line-height:20px">
+	    {% if z.0 == "Y" %}
+			<a href="/surgingaura/viewtext/{{ z.1 }}">{{ z.1 }}</a> - <font color="red">{{ z.0 }}</font>
+	    {% endif %}
+	    {% if z.0 == "N" %}
+			<a href="/surgingaura/viewtext/{{ z.1 }}">{{ z.1 }}</a> - {{ z.0 }}
+	    {% endif %}
+	    {% if z.0 == "M" %}
+			<a href="/surgingaura/viewtext/{{ z.1 }}">{{ z.1 }}</a> - <font color="blue">{{ z.0 }}</font>
+	    {% endif %}
     </li>
 {% endfor %}
 </ul>
