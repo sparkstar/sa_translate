@@ -6,17 +6,17 @@
 
 <ul>
 
-{% for z in translateList %}
+{% for z in entry_text %}
     <li style="float : left; width : 94px;height:20px;line-height:20px">
-	    {% if z.0 == "Y" %}
-			<a href="/surgingaura/viewtext/{{ z.1 }}">{{ z.1 }}</a> - <font color="red">{{ z.0 }}</font>
-	    {% endif %}
-	    {% if z.0 == "N" %}
-			<a href="/surgingaura/viewtext/{{ z.1 }}">{{ z.1 }}</a> - {{ z.0 }}
-	    {% endif %}
-	    {% if z.0 == "M" %}
-			<a href="/surgingaura/viewtext/{{ z.1 }}">{{ z.1 }}</a> - <font color="blue">{{ z.0 }}</font>
-	    {% endif %}
+        {% if z.translatedNumber != 0 %}
+            <a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a> - <font color="red">Y</font>
+        {% endif %}
+        {% if z.translatedNumber == 0 and z.numofText > 0 %}
+            <a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a> - <font color="blue">M</font>
+        {% endif %}
+        {% if z.translatedNumber == 0 and z.numofText == 0 %}
+            <a href="/surgingaura/viewtext/{{ z.textNumber }}">{{ z.textNumber }}</a> - N
+        {% endif %}
     </li>
 {% endfor %}
 </ul>

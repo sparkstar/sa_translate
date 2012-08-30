@@ -85,6 +85,10 @@ def delTranslated(request):
             return redirect('/surgingaura/viewtext/' + req_textNumber)
         
         translateText.objects.get(id = req_translateNumber).delete()
+        
+        entry_text.numofText = entry_text.numofText - 1
+        entry_text.save()
+
 
     return redirect('/surgingaura/viewtext/' + req_textNumber)
 
@@ -127,21 +131,9 @@ def allList(request):
     translatedCount = translateText.objects.filter(choosed = True).count()
     translatedProgress = round(float(translatedCount) / 1685 * 100, 3)
     
-    translateList = []
-    translateObj = translateText.objects
-    
-    for z in range(1,1686):
-        Yflag = "N"
-        if translateObj.filter(choosed = True, textNumber = z).count() == 1:
-            Yflag = "Y"
-        elif translateObj.filter(textNumber = z).count() > 0 :
-            Yflag = "M"
-        else:
-            Yflag = "N"
-        
-        translateList.append([Yflag, z])
-    
-    return render_to_response('viewjp/alllist.html', { "translateList":translateList, "translatedCount":translatedCount, "translatedProgress":translatedProgress })
+    entry_text = Text.objects.all()
+   
+    return render_to_response('viewjp/alllist.html', { "entry_text":entry_text, "translatedProgress":translatedProgress })
 
 def jpcapProcess(list):
     jpcapFlag = ""
@@ -199,6 +191,10 @@ def translatePost(request):
     
     translatedText = translateText(textNumber=number, Contents=text, userID=author)
     translatedText.save()
+    
+    entry_text = Text.objects.get(id = number)
+    entry_text.numofText = entry_text.numofText + 1
+    entry_text.save()
     
     return redirect('/surgingaura/viewtext/' + number)
 
